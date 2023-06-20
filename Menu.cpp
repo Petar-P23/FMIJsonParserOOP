@@ -43,7 +43,7 @@ void minimizeJson(MyString& jsonText) {
 
 	for (size_t i = 0; i < jsonSize; i++)
 	{
-		if ((jsonText[i] == ' ' || jsonText[i] == '\t') && shouldRemove)
+		if ((jsonText[i] == ' ' || jsonText[i] == '\t' || jsonText[i] == '\r' || jsonText[i] == '\n') && shouldRemove)
 			continue;
 
 		if (jsonText[i] == '"' && shouldRemove)
@@ -90,6 +90,8 @@ JEntity* loadFromFile(MyString& path) {
 		std::cout << INVALID_JSON_ERROR << std::endl;
 		std::cout << ex.what() << std::endl;
 	}
+
+	return nullptr;
 }
 
 void print(const JEntity* json) {
@@ -202,7 +204,7 @@ void saveAs(JEntity* json) {
 	std::cout << FILE_PATH_PROMPT << std::endl;
 	std::cin >> filePath;
 
-	JEntity& jElement = (*json)[path.c_str()];
+	JEntity& jElement = path == "/" ? *json : (*json)[path.c_str()];
 	saveFile(filePath, jElement.toString(0));
 }
 
@@ -216,7 +218,7 @@ void save(JEntity* json, MyString& filePath) {
 	std::cout << PATH_PROMPT << std::endl;
 	std::cin >> path;
 
-	JEntity& jElement = (*json)[path.c_str()];
+	JEntity& jElement = path == "/" ? *json : (*json)[path.c_str()];
 	saveFile(filePath, jElement.toString(0));
 }
 
@@ -269,4 +271,6 @@ void Menu::run() {
 			std::cout << ex.what() << std::endl;
 		}
 	}
+
+	delete[] json;
 }

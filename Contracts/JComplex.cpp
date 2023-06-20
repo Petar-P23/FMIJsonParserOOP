@@ -88,8 +88,11 @@ void JComplex::createChild(const char* path, const MyString& key, const MyString
 		{
 			(*this)[next.c_str()].createChild(*path == '\0' ? path : path + 1, key, value);
 		}
-		catch (const std::exception&)
+		catch (const std::exception& ex)
 		{
+			if (INVALID_TYPE_ERROR == ex.what())
+				throw ex;
+
 			if (this->size == this->capacity)
 				this->expand();
 
